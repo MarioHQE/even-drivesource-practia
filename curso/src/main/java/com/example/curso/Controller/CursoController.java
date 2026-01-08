@@ -46,7 +46,7 @@ public class CursoController {
     }
 
     @PostMapping("/asignarcurso")
-    public String asignarcurso(@RequestParam String idusuario, @RequestParam String idcurso) {
+    public ResponseEntity<String> asignarcurso(@RequestParam String idusuario, @RequestParam String idcurso) {
 
         return cursoService.asignarcurso(idusuario, idcurso);
     }

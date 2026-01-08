@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
