@@ -8,15 +8,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.example.curso.Entity.Curso;
+import com.example.curso.Entity.ListadeUsuario;
 import com.example.curso.Repository.CursoRepository;
+import com.example.curso.Repository.ListadeUsuarioRepository;
+import com.example.curso.client.UsuarioClient;
 
 @Service
 public class CursoService {
     @Autowired
-    WebClient.Builder webClientBuilder;
-    private final String USUARIO_SERVICE_URL = "http://localhost:8081/usuario";
+    private UsuarioClient usuarioClient;
+
     @Autowired
-    CursoRepository cursoRepository;
+    private CursoRepository cursoRepository;
+
+    @Autowired
+    private ListadeUsuarioRepository listadeUsuarioRepository;
 
     public Page<Curso> findAllCurso(Pageable pageable) {
         return cursoRepository.findAll(pageable);
@@ -48,25 +54,30 @@ public class CursoService {
 
     public ResponseEntity<String> asignarcurso(String idusuario, String idcurso) {
         try {
-            Boolean usurioExiste = webClientBuilder.build().get()
-                    .uri(USUARIO_SERVICE_URL + "/verificar/" + idusuario)
-                    .retrieve()
-                    .bodyToMono(Boolean.class)
-                    .doOnError(err -> System.err.println("Error: " + err))
-                    .block();
-            if (usurioExiste == null || !usurioExiste) {
+            Boolean usuarioExiste = usuarioClient.existuser(idusuario);
+            if (usuarioExiste == null || !usuarioExiste) {
                 return ResponseEntity.badRequest().body("El usuario no existe");
-            } else {
-                Curso curso = cursoRepository.findById(idcurso)
-                        .orElseThrow(() -> new RuntimeException("Curso no encontrado con id: " + idcurso));
-
-                cursoRepository.save(curso);
-                return ResponseEntity.ok("Curso asignado al usuario correctamente");
-
             }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error al asignar el curso: " + e.getMessage());
-        }
 
+            Curso curso = cursoRepository.findById(idcurso)
+                    .orElse(null);
+
+            if (curso == null) {
+                return ResponseEntity.badRequest().body("El curso no existe");
+            }
+
+            // 3. Crear la asignación
+            ListadeUsuario asignacion = new ListadeUsuario();
+            asignacion.setCurso(curso);
+            asignacion.setIdUsuario(idusuario);
+            listadeUsuarioRepository.save(asignacion);
+
+            return ResponseEntity.ok("Curso asignado al usuario correctamente");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body("Error al asignar el curso: " + e.getMessage());
+        }
     }
 }
