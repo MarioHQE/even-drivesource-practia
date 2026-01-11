@@ -14,7 +14,7 @@ public class GatewayConfig {
         @Bean
         public RouterFunction<ServerResponse> customRoutes() {
                 return GatewayRouterFunctions.route(RequestPredicates.path("/prueba"),
-                                HandlerFunctions.http("http://localhost:3600")).andRoute(
+                                HandlerFunctions.http("http://localhost:3600/prueba")).andRoute(
                                                 RequestPredicates.path("/curso/**"),
                                                 HandlerFunctions.http("http://localhost:8082"))
                                 .andRoute(RequestPredicates.path("/usuario"),
