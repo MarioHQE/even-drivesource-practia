@@ -1,5 +1,6 @@
 package com.example.gateway.Configuration;
 
+import com.example.gateway.GatewayApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -18,6 +19,12 @@ import java.util.stream.Collectors;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final GatewayApplication gatewayApplication;
+
+    SecurityConfig(GatewayApplication gatewayApplication) {
+        this.gatewayApplication = gatewayApplication;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -27,11 +34,12 @@ public class SecurityConfig {
                         .requestMatchers("/home/**", "/public/**").permitAll()
 
                         // Rutas protegidas con roles específicos
-                        .requestMatchers("/prueba/hello-1").hasRole("admin-client-role")
-                        .requestMatchers("/prueba/hello-2").hasAnyRole("admin-client-role", "user-client-role")
+                        // .requestMatchers("/prueba/hello-1").hasRole("admin-client-role")
+                        // .requestMatchers("/prueba/hello-2").hasAnyRole("admin-client-role",
+                        // "user-client-role")
 
                         // Otras rutas de prueba requieren autenticación
-                        .requestMatchers("/prueba/**").authenticated()
+                        .requestMatchers("/prueba/**").permitAll()
 
                         // Curso y Usuario requieren autenticación
                         .requestMatchers("/curso/**", "/usuario/**").authenticated()

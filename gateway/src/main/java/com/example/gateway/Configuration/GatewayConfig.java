@@ -11,10 +11,13 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.servlet.function.HandlerFilterFunction;
+import org.springframework.web.servlet.function.HandlerFunction;
 import org.springframework.web.servlet.function.RequestPredicates;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.RouterFunctions;
 import org.springframework.web.servlet.function.ServerResponse;
+
+import java.net.URI;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -24,15 +27,13 @@ public class GatewayConfig {
         private OAuth2AuthorizedClientService authorizedClientService;
 
         @Bean
-        public RouterFunction<ServerResponse> customRoutes() {
-                return GatewayRouterFunctions.
+        public RouterFunction<ServerResponse> getRoute() {
+                return GatewayRouterFunctions.route().GET("/prueba", HandlerFunctions.http("http://localhost:3600"))
+                                .before(addAuthorizationHeader())
+                                .GET("/curso", HandlerFunctions.http("http://localhost:8082"))
+                                .before(addAuthorizationHeader())
+                                .build();
 
-                                route(RequestPredicates.path("/prueba/**"),
-                                                HandlerFunctions.http("http://localhost:3600"))
-                                .andRoute(RequestPredicates.path("/curso/**"),
-                                                HandlerFunctions.http("http://localhost:8082"))
-                                .andRoute(RequestPredicates.path("/usuario/**"),
-                                                HandlerFunctions.http("http://localhost:8083"));
         }
 
         /**
