@@ -1,10 +1,17 @@
 package com.example.oauhprueba.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.nimbusds.jose.proc.SecurityContext;
+
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/prueba")
@@ -12,28 +19,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PruebaController {
 
     @GetMapping("/hello-1")
-    public String helloadmin(
-            @RequestHeader(value = "X-User-Name", required = false) String username,
-            @RequestHeader(value = "X-User-Roles", required = false) String roles) {
-
-        log.info("Usuario: {}", username);
-        log.info("Roles: {}", roles);
-
-        // El Gateway ya validó que tiene el rol admin-client-role
-        return "Hello Spring boot with keycloak - ADMIN (User: " + username + ")";
+    @PreAuthorize("hasRole('admin-client-role')")
+    public String helloadmin(@AuthenticationPrincipal String princString) {
+        log.info("Principal {}", princString);
+        return "Hello Spring boot with keycloak- ADMIN";
     }
 
     @GetMapping("/hello-2")
-    public String hellouser(
-            @RequestHeader(value = "X-User-Name", required = false) String username,
-            @RequestHeader(value = "X-User-Email", required = false) String email,
-            @RequestHeader(value = "X-User-Roles", required = false) String roles) {
+    @PreAuthorize("hasRole('user-client-role') or hasRole('admin-client-role')")
+    public String hellouser() {
+        log.info("Principal {}", SecurityContextHolder.getContext().getAuthentication().getName());
 
-        log.info("Usuario: {}", username);
-        log.info("Email: {}", email);
-        log.info("Roles: {}", roles);
-
-        // El Gateway ya validó que tiene rol user o admin
-        return "Hello Spring boot with keycloak - USER (User: " + username + ", Email: " + email + ")";
+        SecurityContextHolder.getContext().getAuthentication().getAuthorities().forEach(auth -> {
+            log.info("Authority: {}", auth.getAuthority());
+            log.info("Principal from SecurityContext: {}",
+                    SecurityContextHolder.getContext().getAuthentication().getName());
+        });
+        return "Hello Spring boot with keycloak -USER";
     }
 }
