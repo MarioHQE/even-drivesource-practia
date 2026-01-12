@@ -25,6 +25,7 @@ public class CursoService {
     private ListadeUsuarioRepository listadeUsuarioRepository;
 
     public Page<Curso> findAllCurso(Pageable pageable) {
+        usuarioClient.existuser("ac282a6f-0ace-4919-b584-d7f417a79df9");
         return cursoRepository.findAll(pageable);
 
     }
