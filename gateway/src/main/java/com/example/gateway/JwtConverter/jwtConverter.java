@@ -1,4 +1,4 @@
-package com.example.oauhprueba.Security;
+package com.example.gateway.JwtConverter;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.stereotype.Component;
 
 @Component
-public class jwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+public class jwtConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
     @Value("${jwt.auth.converter.principal-attribute}")

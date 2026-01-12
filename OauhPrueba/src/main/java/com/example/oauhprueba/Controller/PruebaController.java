@@ -2,8 +2,6 @@ package com.example.oauhprueba.Controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nimbusds.jose.proc.SecurityContext;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.access.prepost.PreAuthorize;
