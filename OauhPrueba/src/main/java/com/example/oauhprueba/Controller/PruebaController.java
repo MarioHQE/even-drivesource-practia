@@ -17,14 +17,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class PruebaController {
 
     @GetMapping("/hello-1")
-    @PreAuthorize("hasRole('admin-client-role')")
+    // @PreAuthorize("hasRole('admin-client_role')")
     public String helloadmin(@AuthenticationPrincipal String princString) {
         log.info("Principal {}", princString);
         return "Hello Spring boot with keycloak- ADMIN";
     }
 
     @GetMapping("/hello-2")
-    @PreAuthorize("hasRole('user-client-role') or hasRole('admin-client-role')")
     public String hellouser() {
         log.info("Principal {}", SecurityContextHolder.getContext().getAuthentication().getName());
 
