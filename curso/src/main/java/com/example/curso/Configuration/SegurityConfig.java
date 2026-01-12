@@ -24,6 +24,7 @@ public class SegurityConfig {
                                                 .requestMatchers("/curso/**").permitAll()
                                                 .requestMatchers("http://localhost:8082/**").permitAll()
                                                 .anyRequest().authenticated())
+
                                 .oauth2ResourceServer(
                                                 oauth2 -> oauth2.jwt(
                                                                 jwt -> jwt.jwtAuthenticationConverter(jwtconverter)))
