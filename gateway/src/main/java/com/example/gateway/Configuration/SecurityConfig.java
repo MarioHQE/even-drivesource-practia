@@ -29,7 +29,6 @@ public class SecurityConfig {
                                                 resourceserver -> resourceserver.jwt(
                                                                 jwt -> jwt.jwtAuthenticationConverter(
                                                                                 jwtconverter)))
-
                                 .build();
 
         }
